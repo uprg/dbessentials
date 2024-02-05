@@ -74,7 +74,10 @@ class DBMigration:
             for record in records:
                 document = {}
                 for index, value in enumerate(columns):
-                    document[value] = record[index]
+                    if isinstance(record[index], memoryview):
+                        document[value] = bytes(record[index])
+                    else:
+                        document[value] = record[index]
                 documents.append(document)
 
             collection = database.get_collection(name=table)
